@@ -281,7 +281,7 @@
   const KINDS = Object.keys(PAPER);
   // 이전 버전에만 있던 상품 (진행 기록 표시용)
   const RETIRED = {
-    charger: { emoji: '🔌', name: '무선충전기', side: 'bok', img: 'assets/card_charger.webp', msg: '당첨! 무선충전기를 받아가세요 🎉' },
+    charger: { emoji: '🔌', name: '무선충전기', side: 'bok' },
   };
   const paperOf = (k) => PAPER[k] || RETIRED[k] || { emoji: '📄', name: k, img: '', msg: '' };
   const defaultCounts = () => Object.fromEntries(KINDS.map(k => [k, PAPER[k].count]));
@@ -318,7 +318,7 @@
         if (s.game) {
           s.game.bok = s.game.bok.filter(k => KINDS.includes(k));
           s.game.bul = s.game.bul.filter(k => KINDS.includes(k));
-          if (s.game.round && s.game.round.paper && !KINDS.includes(s.game.round.paper) && s.game.round.step < 3) s.game.round = null;
+          if (s.game.round && s.game.round.paper && !KINDS.includes(s.game.round.paper)) s.game.round = null;
         }
         if (!s.game) s.game = newGame(s.settings);
         return s;

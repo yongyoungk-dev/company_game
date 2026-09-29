@@ -40,8 +40,10 @@ save(cutout(S[4].crop((1072,562,1328,762))), 'badge_bok.png', 400)
 save(cutout(S[4].crop((1330,562,1588,762))), 'badge_bul.png', 400)
 for n,b in (('box_bok',(70,215,555,725)),('box_bul',(598,215,1080,725)),('box_person',(1125,215,1605,725))):
     save(cutout(S[3].crop(b)), n+'.png', 480)
-for n,b in (('card_coffee',(72,185,556,778)),('card_charger',(598,185,1082,778)),('card_battery',(1122,185,1606,778))):
-    save(cutout(S[2].crop(b)), n+'.png', 480)
+# 복 상품 카드 4종: 두 번째로 받은 시트 04 (커피카드 / 보조배터리 / 무선마우스 / 츄파춥스)
+S4v2=Image.open(D+'sheet_04_v2.webp').convert('RGB')
+for n,b in (('card_coffee',(68,200,425,745)),('card_battery',(462,200,820,745)),('card_mouse',(858,200,1214,745)),('card_chupa',(1252,200,1608,745))):
+    save(cutout(S4v2.crop(b)), n+'.png', 420)
 for n,b in (('card_toast',(72,180,556,778)),('card_poem',(598,180,1082,778))):
     save(cutout(S[1].crop(b)), n+'.png', 480)
 bg=S[1].crop((1240,226,1488,742)).resize((540,1124),Image.LANCZOS).filter(ImageFilter.GaussianBlur(2))
