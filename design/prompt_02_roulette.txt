@@ -1,0 +1,42 @@
+[디자인 시트 02] 복/불 룰렛
+참고 이미지: sheet_02_roulette.png
+사이즈: 1600x900 (16:9)
+
+※ 룰렛 판은 앱이 코드로 회전시킵니다. 반드시 '정면, 원이 찌그러지지 않게' 만들어 주세요.
+※ 칸 안의 '복/불' 글자는 앱에서 올릴 수 있으니, 글자 없는 버전을 먼저 권장합니다.
+
+──────────────────────────────
+■ 시트 전체 프롬프트 (1600x900 한 장)
+──────────────────────────────
+A game UI design sheet, 16:9, 1600x900, dark purple night background (#1b1033).
+Left large panel: a flat front-view prize roulette wheel with 8 equal segments alternating golden yellow (#ffc53d)
+and bright red (#ff4d4f), a thick glossy white outer rim with 16 small glowing warm light bulbs evenly spaced,
+a glossy white center hub button. Korean letters "복" on yellow segments and "불" on red segments, written radially.
+Top right panel: a white triangular roulette pointer pointing downward with a purple gem at the top.
+Bottom right panel: two rounded result badges, a golden yellow badge with dark brown text "복" and a red badge
+with white text "불".
+Dashed-border panels with small captions, palette swatches top right.
+Style: glossy 3D cartoon game asset, vibrant, casino game show vibe but friendly, clean edges.
+
+──────────────────────────────
+■ 개별 에셋 프롬프트
+──────────────────────────────
+[roulette_wheel.png · 1024x1024 · 투명 배경]
+Perfectly circular prize roulette wheel, exact top-down front view, 8 equal pie segments alternating golden yellow
+(#ffc53d) and bright red (#ff4d4f), the first segment boundary at 12 o'clock, thick glossy white rim with 16 small
+glowing warm bulbs evenly spaced, glossy white center hub, no text, no pointer, isolated on transparent background,
+symmetrical, game asset.
+
+[roulette_pointer.png · 256x256 · 투명 배경]
+Glossy white triangular roulette pointer pointing straight down, small purple (#8b5cf6) gem at the top, soft drop
+shadow, game UI asset, isolated on transparent background.
+
+[badge_bok.png / badge_bul.png · 600x300 · 투명 배경]
+Rounded rectangle game result badge, glossy 3D, golden yellow (#ffc53d) with a lighter top highlight,
+isolated on transparent background, no text.
+(불 배지는 색만 바꿔서) ... bright red (#ff4d4f) ...
+
+──────────────────────────────
+■ 네거티브 프롬프트
+──────────────────────────────
+perspective, tilted, oval, uneven segments, distorted circle, extra segments, blurry, watermark, photorealistic

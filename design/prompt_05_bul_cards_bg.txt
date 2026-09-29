@@ -1,0 +1,44 @@
+[디자인 시트 05] 불 제비 · 미션 카드 2종 (건배사 / 삼행시) & 모바일 배경
+참고 이미지: sheet_05_bul_cards_bg.png
+사이즈: 1600x900 (16:9)
+
+※ 삼행시 카드의 주제어 칸은 앱이 글자를 올리므로 반드시 비워 두세요.
+※ 배경은 글자가 잘 보이도록 어둡고 단순하게.
+
+──────────────────────────────
+■ 시트 전체 프롬프트 (1600x900 한 장)
+──────────────────────────────
+A game UI design sheet, 16:9, 1600x900, dark purple night background (#1b1033).
+Three equal dashed-border panels.
+Panel 1: a vertical mission card like an unfolded lottery paper slip, cream paper (#fffdf5), rounded corners,
+dashed inner border, a red-pink circular badge (#ff9c9c to #ffe1e1 radial) with two clinking beer mugs splashing
+foam, Korean text "건배사", small red pill tag "불".
+Panel 2: the same card style with a hand holding a pen writing on paper in the badge, Korean text "삼행시",
+and an empty pale yellow rounded box below for a keyword.
+Panel 3: a smartphone mockup showing a dark purple night background with soft blurred bokeh lights in purple,
+red and gold, a few tiny sparkles and stars.
+Small captions below each panel, palette swatches top right.
+Style: glossy 3D cartoon, funny "penalty mission" mood, dramatic but friendly.
+
+──────────────────────────────
+■ 개별 에셋 프롬프트
+──────────────────────────────
+[card_toast.png · 600x800]
+Vertical mission card like an unfolded lottery paper slip, cream paper (#fffdf5), rounded corners, dashed inner
+border, upper center red-pink round badge with two cute glossy 3D beer mugs clinking with splashing foam,
+little motion lines, empty space at the bottom for text, no text.
+
+[card_poem.png · 600x800]
+(위와 동일) ... red-pink round badge with a cute glossy 3D hand holding a pen writing on paper, and an empty pale
+yellow rounded rectangle below the badge for a keyword, no text.
+
+[bg_mobile.png · 1080x1920 · 세로]
+Dark purple night background for a mobile party game (#1b1033 to #2a1850), soft blurred bokeh light blobs in
+purple (#8b5cf6), red (#ff4d4f) and gold (#ffc53d) near the edges, a few tiny sparkles and stars, subtle and
+low contrast in the center so UI text stays readable, no text, no objects.
+
+──────────────────────────────
+■ 네거티브 프롬프트
+──────────────────────────────
+alcohol brand logo, drunk people, realistic photo, bright busy background, text in the keyword box,
+misspelled text, watermark, blurry

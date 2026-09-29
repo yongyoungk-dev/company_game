@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>복불복 제비뽑기 디자인 시트</title>
+<style>
+  :root {
+    --bg: #1b1033; --bg2: #2a1850; --bok: #ffc53d; --bok-d: #d99a00; --bul: #ff4d4f; --bul-d: #c41d20;
+    --pp: #8b5cf6; --pp-d: #5b21b6; --paper: #fffdf5; --ink: #2b2340; --muted: #c9bfe6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #000; font-family: -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+  .sheet {
+    width: 1600px; height: 900px; position: relative; overflow: hidden; color: #fff;
+    background: radial-gradient(circle at 50% 0%, var(--bg2), var(--bg) 75%);
+    padding: 40px 56px; display: flex; flex-direction: column; margin-bottom: 20px;
+  }
+  .head { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid #ffffff22; padding-bottom: 16px; }
+  .head .no { font-size: 18px; color: var(--muted); letter-spacing: 3px; font-weight: 700; }
+  .head h1 { margin: 4px 0 0; font-size: 40px; letter-spacing: -1px; }
+  .head h1 .b { color: var(--bok); } .head h1 .u { color: var(--bul); }
+  .head .meta { text-align: right; font-size: 15px; color: var(--muted); line-height: 1.6; }
+  .palette { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+  .palette i { width: 26px; height: 26px; border-radius: 8px; border: 2px solid #ffffff44; display: block; }
+  .body { flex: 1; display: flex; gap: 28px; align-items: stretch; padding-top: 28px; }
+  .slot {
+    flex: 1; background: #ffffff0d; border: 2px dashed #ffffff26; border-radius: 26px; position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+  }
+  .slot .art { flex: 1; display: grid; place-items: center; width: 100%; }
+  .cap { text-align: center; margin-top: 14px; }
+  .cap b { display: block; font-size: 22px; }
+  .cap span { display: block; font-size: 14px; color: var(--muted); margin-top: 4px; font-family: ui-monospace, Menlo, monospace; }
+  .foot { font-size: 14px; color: var(--muted); margin-top: 18px; display: flex; justify-content: space-between; }
+
+  /* 01 로고 */
+  .logo { font-size: 150px; font-weight: 900; letter-spacing: -2px; line-height: 1; text-align: center; }
+  .logo .b, .logo .u, .logo .w { display: inline-block; transform: rotate(-4deg); }
+  .logo .u { transform: rotate(3deg) translateY(-8px); }
+  .logo .b { color: var(--bok); text-shadow: 0 0 0 #000, 5px 5px 0 #7a4f00, -3px -3px 0 #7a4f00, 3px -3px 0 #7a4f00, -3px 3px 0 #7a4f00, 0 14px 24px #0008; }
+  .logo .u { color: var(--bul); text-shadow: 5px 5px 0 #6d0d0f, -3px -3px 0 #6d0d0f, 3px -3px 0 #6d0d0f, -3px 3px 0 #6d0d0f, 0 14px 24px #0008; }
+  .logo .w { color: #fff; text-shadow: 5px 5px 0 #3b2470, -3px -3px 0 #3b2470, 3px -3px 0 #3b2470, -3px 3px 0 #3b2470, 0 14px 24px #0008; }
+  .logo small { display: block; font-size: 64px; letter-spacing: 14px; margin-top: 18px; color: #fff; text-shadow: 0 4px 0 #5b21b6, 0 0 30px #8b5cf6; }
+  .sparkle { position: absolute; font-size: 40px; }
+  .icon { width: 300px; height: 300px; border-radius: 68px; background: linear-gradient(150deg, #a78bfa, #5b21b6);
+    box-shadow: 0 20px 50px #0009, inset 0 4px 0 #ffffff55; display: grid; place-items: center; position: relative; overflow: hidden; }
+  .icon .mini-wheel { width: 210px; height: 210px; border-radius: 50%; border: 10px solid #fff;
+    background: conic-gradient(var(--bok) 0 90deg, var(--bul) 90deg 180deg, var(--bok) 180deg 270deg, var(--bul) 270deg 360deg);
+    display: grid; place-items: center; box-shadow: 0 8px 20px #0006; }
+  .icon .mini-wheel b { width: 70px; height: 70px; border-radius: 50%; background: #fff; display: grid; place-items: center;
+    font-size: 34px; color: var(--bg); font-weight: 900; }
+
+  /* 02 룰렛 */
+  .wheel { width: 480px; height: 480px; border-radius: 50%; position: relative; border: 16px solid #fff;
+    box-shadow: 0 24px 60px #000a, inset 0 0 0 8px #0002;
+    background: conic-gradient(var(--bok) 0 45deg, var(--bul) 45deg 90deg, var(--bok) 90deg 135deg, var(--bul) 135deg 180deg,
+      var(--bok) 180deg 225deg, var(--bul) 225deg 270deg, var(--bok) 270deg 315deg, var(--bul) 315deg 360deg); }
+  .wheel .lbl { position: absolute; inset: 0; text-align: center; font-size: 58px; font-weight: 900; text-shadow: 0 3px 6px #0006; }
+  .wheel .lbl b { display: inline-block; margin-top: 11%; }
+  .wheel .dots i { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: #fff6c8;
+    box-shadow: 0 0 10px #ffe58a; }
+  .wheel .hubc { position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; transform: translate(-50%,-50%);
+    border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #ddd); box-shadow: 0 6px 16px #0007;
+    display: grid; place-items: center; font-size: 36px; font-weight: 900; color: var(--bg); }
+  .pointer { width: 0; height: 0; border-left: 60px solid transparent; border-right: 60px solid transparent;
+    border-top: 110px solid #fff; filter: drop-shadow(0 8px 8px #0008); position: relative; }
+  .pointer::after { content: ""; position: absolute; left: -22px; top: -100px; width: 44px; height: 44px; border-radius: 50%; background: var(--pp); }
+  .badge { font-size: 90px; font-weight: 900; padding: 14px 60px; border-radius: 34px; box-shadow: 0 16px 40px #0008; }
+  .badge.bok { background: var(--bok); color: #3a2800; } .badge.bul { background: var(--bul); color: #fff; }
+
+  /* 03 상자 */
+  .box { width: 330px; height: 290px; border-radius: 40px; position: relative; display: grid; place-items: center;
+    box-shadow: 0 26px 50px #000a, inset 0 6px 0 #ffffff55, inset 0 -14px 0 #0003; }
+  .box::before { content: ""; position: absolute; top: 36px; left: 50%; transform: translateX(-50%);
+    width: 150px; height: 26px; border-radius: 99px; background: #0006; box-shadow: inset 0 6px 8px #000a; }
+  .box.bok { background: linear-gradient(160deg, #ffd666, var(--bok-d)); }
+  .box.bul { background: linear-gradient(160deg, #ff7875, var(--bul-d)); }
+  .box.person { background: linear-gradient(160deg, #a78bfa, var(--pp-d)); }
+  .box .face { font-size: 110px; margin-top: 30px; }
+  .box .ribbon { position: absolute; bottom: 22px; font-size: 34px; font-weight: 900; color: #fff; text-shadow: 0 3px 0 #0004; }
+  .box .paper-peek { position: absolute; top: 0; left: 50%; width: 70px; height: 90px; background: var(--paper);
+    border-radius: 8px; transform: translate(-30%, -40%) rotate(12deg); box-shadow: 0 6px 12px #0005; z-index: -1; }
+
+  /* 04~05 카드 */
+  .card { width: 290px; height: 400px; border-radius: 30px; background: var(--paper); color: var(--ink);
+    box-shadow: 0 22px 50px #000a; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; }
+  .card::before { content: ""; position: absolute; inset: 14px; border-radius: 22px; border: 3px dashed #0000001f; }
+  .card .ill { width: 180px; height: 180px; border-radius: 50%; display: grid; place-items: center; font-size: 110px; }
+  .card.bok .ill { background: radial-gradient(circle, #fff3c4, #ffd666); }
+  .card.bul .ill { background: radial-gradient(circle, #ffe1e1, #ff9c9c); }
+  .card .nm { font-size: 38px; font-weight: 900; margin-top: 22px; }
+  .card .tg { margin-top: 10px; font-size: 18px; font-weight: 800; padding: 4px 16px; border-radius: 99px; }
+  .card.bok .tg { background: var(--bok); color: #3a2800; } .card.bul .tg { background: var(--bul); color: #fff; }
+  .card .topic { margin-top: 10px; font-size: 30px; font-weight: 900; letter-spacing: 8px; background: #ffe7a3; padding: 2px 14px; border-radius: 10px; }
+  .phone { width: 250px; height: 520px; border-radius: 40px; border: 8px solid #111; overflow: hidden; position: relative;
+    background: radial-gradient(circle at 50% 0%, var(--bg2), var(--bg) 75%); box-shadow: 0 22px 50px #000a; }
+  .phone .st { position: absolute; font-size: 22px; opacity: .55; }
+  .phone .glow { position: absolute; width: 200px; height: 200px; border-radius: 50%; filter: blur(50px); opacity: .5; }
+</style>
+</head>
+<body>
+
+<!-- 01 -->
+<section class="sheet" id="s1">
+  <div class="head">
+    <div><div class="no">DESIGN SHEET 01 / 05</div><h1>타이틀 로고 &amp; 앱 아이콘</h1></div>
+    <div class="meta">1600 × 900 · 복불복 제비뽑기<div class="palette"><i style="background:#1b1033"></i><i style="background:#8b5cf6"></i><i style="background:#ffc53d"></i><i style="background:#ff4d4f"></i><i style="background:#fffdf5"></i></div></div>
+  </div>
+  <div class="body">
+    <div class="slot" style="flex:2.1">
+      <div class="art" style="position:relative">
+        <div class="logo"><span class="b">복</span><span class="u">불</span><span class="w">복</span><small>제비뽑기</small></div>
+        <span class="sparkle" style="left:12%;top:18%">✨</span><span class="sparkle" style="right:12%;top:12%">🎉</span>
+        <span class="sparkle" style="right:16%;bottom:14%">✨</span><span class="sparkle" style="left:16%;bottom:16%">🍻</span>
+      </div>
+      <div class="cap"><b>타이틀 로고</b><span>logo_title.png · 1200×360 · 투명 배경</span></div>
+    </div>
+    <div class="slot">
+      <div class="art"><div class="icon"><div class="mini-wheel"><b>복</b></div></div></div>
+      <div class="cap"><b>앱 아이콘</b><span>app_icon.png · 512×512 · 모서리 둥글게</span></div>
+    </div>
+  </div>
+  <div class="foot"><span>'복'은 골드, '불'은 레드, 마지막 '복'은 화이트. 굵고 둥근 한글 서체에 두꺼운 외곽선</span><span>홈 화면 아이콘에서도 알아볼 수 있게 룰렛 모양을 단순하게</span></div>
+</section>
+
+<!-- 02 -->
+<section class="sheet" id="s2">
+  <div class="head">
+    <div><div class="no">DESIGN SHEET 02 / 05</div><h1>복/불 룰렛</h1></div>
+    <div class="meta">1600 × 900 · 복불복 제비뽑기<div class="palette"><i style="background:#ffc53d"></i><i style="background:#ff4d4f"></i><i style="background:#ffffff"></i><i style="background:#8b5cf6"></i></div></div>
+  </div>
+  <div class="body">
+    <div class="slot" style="flex:1.6">
+      <div class="art">
+        <div class="wheel" id="wheel">
+          <div class="dots"></div>
+          <div class="lbl" style="transform:rotate(22.5deg)"><b>복</b></div><div class="lbl" style="transform:rotate(67.5deg)"><b>불</b></div>
+          <div class="lbl" style="transform:rotate(112.5deg)"><b>복</b></div><div class="lbl" style="transform:rotate(157.5deg)"><b>불</b></div>
+          <div class="lbl" style="transform:rotate(202.5deg)"><b>복</b></div><div class="lbl" style="transform:rotate(247.5deg)"><b>불</b></div>
+          <div class="lbl" style="transform:rotate(292.5deg)"><b>복</b></div><div class="lbl" style="transform:rotate(337.5deg)"><b>불</b></div>
+          <div class="hubc">GO</div>
+        </div>
+      </div>
+      <div class="cap"><b>룰렛 판 (8칸, 복/불 번갈아)</b><span>roulette_wheel.png · 1024×1024 · 투명 배경 · 정면</span></div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:28px">
+      <div class="slot">
+        <div class="art"><div class="pointer"></div></div>
+        <div class="cap"><b>포인터 (아래쪽이 뾰족)</b><span>roulette_pointer.png · 256×256 · 투명 배경</span></div>
+      </div>
+      <div class="slot">
+        <div class="art" style="display:flex;gap:30px;justify-content:center"><div class="badge bok">복</div><div class="badge bul">불</div></div>
+        <div class="cap"><b>결과 배지</b><span>badge_bok.png / badge_bul.png · 600×300 · 투명 배경</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>판 안쪽 글자는 따로 넣어도 되니, 이미지는 칸 색과 테두리 조명만 있어도 OK</span><span>12시 방향이 칸 경계선 (0°)부터 시작</span></div>
+</section>
+
+<!-- 03 -->
+<section class="sheet" id="s3">
+  <div class="head">
+    <div><div class="no">DESIGN SHEET 03 / 05</div><h1>제비뽑기 상자 3종</h1></div>
+    <div class="meta">1600 × 900 · 복불복 제비뽑기<div class="palette"><i style="background:#ffc53d"></i><i style="background:#ff4d4f"></i><i style="background:#8b5cf6"></i><i style="background:#fffdf5"></i></div></div>
+  </div>
+  <div class="body">
+    <div class="slot"><div class="art"><div class="box bok"><div class="paper-peek"></div><div class="face">😆</div><div class="ribbon">복 상자</div></div></div>
+      <div class="cap"><b>복 상자</b><span>box_bok.png · 800×700 · 투명 배경</span></div></div>
+    <div class="slot"><div class="art"><div class="box bul"><div class="paper-peek"></div><div class="face">😱</div><div class="ribbon">불 상자</div></div></div>
+      <div class="cap"><b>불 상자</b><span>box_bul.png · 800×700 · 투명 배경</span></div></div>
+    <div class="slot"><div class="art"><div class="box person"><div class="paper-peek"></div><div class="face">🙋</div><div class="ribbon">수행자 상자</div></div></div>
+      <div class="cap"><b>수행자 상자</b><span>box_person.png · 800×700 · 투명 배경</span></div></div>
+  </div>
+  <div class="foot"><span>윗면에 손 넣는 구멍, 종이가 살짝 삐져나온 뽑기통 느낌</span><span>세 상자는 모양이 같고 색과 표정만 다르게</span></div>
+</section>
+
+<!-- 04 -->
+<section class="sheet" id="s4">
+  <div class="head">
+    <div><div class="no">DESIGN SHEET 04 / 05</div><h1>복 제비 · 상품 카드 3종</h1></div>
+    <div class="meta">1600 × 900 · 복불복 제비뽑기<div class="palette"><i style="background:#fffdf5"></i><i style="background:#ffd666"></i><i style="background:#ffc53d"></i><i style="background:#2b2340"></i></div></div>
+  </div>
+  <div class="body">
+    <div class="slot"><div class="art"><div class="card bok"><div class="ill">☕</div><div class="nm">커피카드</div><div class="tg">복</div></div></div>
+      <div class="cap"><b>커피카드</b><span>card_coffee.png · 600×800</span></div></div>
+    <div class="slot"><div class="art"><div class="card bok"><div class="ill">🔌</div><div class="nm">무선충전기</div><div class="tg">복</div></div></div>
+      <div class="cap"><b>무선충전기</b><span>card_charger.png · 600×800</span></div></div>
+    <div class="slot"><div class="art"><div class="card bok"><div class="ill">🔋</div><div class="nm">보조배터리</div><div class="tg">복</div></div></div>
+      <div class="cap"><b>보조배터리</b><span>card_battery.png · 600×800</span></div></div>
+  </div>
+  <div class="foot"><span>접었다 편 제비 종이 느낌 (크림색 종이, 점선 테두리)</span><span>가운데 원 안에 상품 일러스트, 골드 계열 배경</span></div>
+</section>
+
+<!-- 05 -->
+<section class="sheet" id="s5">
+  <div class="head">
+    <div><div class="no">DESIGN SHEET 05 / 05</div><h1>불 제비 · 미션 카드 2종 &amp; 배경</h1></div>
+    <div class="meta">1600 × 900 · 복불복 제비뽑기<div class="palette"><i style="background:#fffdf5"></i><i style="background:#ff9c9c"></i><i style="background:#ff4d4f"></i><i style="background:#1b1033"></i></div></div>
+  </div>
+  <div class="body">
+    <div class="slot"><div class="art"><div class="card bul"><div class="ill">🍻</div><div class="nm">건배사</div><div class="tg">불</div></div></div>
+      <div class="cap"><b>건배사</b><span>card_toast.png · 600×800</span></div></div>
+    <div class="slot"><div class="art"><div class="card bul"><div class="ill">✍️</div><div class="nm">삼행시</div><div class="topic">○○○</div></div></div>
+      <div class="cap"><b>삼행시 (주제어 자리 비움)</b><span>card_poem.png · 600×800</span></div></div>
+    <div class="slot"><div class="art"><div class="phone">
+        <div class="glow" style="background:#8b5cf6;left:-40px;top:-40px"></div><div class="glow" style="background:#ff4d4f;right:-80px;bottom:60px"></div>
+        <div class="glow" style="background:#ffc53d;left:-60px;bottom:-60px"></div>
+        <span class="st" style="left:30px;top:70px">✨</span><span class="st" style="right:40px;top:150px">🎊</span>
+        <span class="st" style="left:50px;top:300px">⭐</span><span class="st" style="right:30px;top:400px">✨</span>
+      </div></div>
+      <div class="cap"><b>모바일 배경</b><span>bg_mobile.png · 1080×1920</span></div></div>
+  </div>
+  <div class="foot"><span>삼행시 카드의 주제어는 앱이 글자를 올리므로 빈 칸으로</span><span>배경은 어둡게 유지해 글자 대비 확보 (보라 톤 밤 + 은은한 조명)</span></div>
+</section>
+
+<script>
+  // 룰렛 테두리 조명 점
+  const dots = document.querySelector('#wheel .dots');
+  for (let i = 0; i < 16; i++) {
+    const a = (i * 22.5) * Math.PI / 180, r = 232;
+    const d = document.createElement('i');
+    d.style.transform = `translate(${Math.sin(a) * r}px, ${-Math.cos(a) * r}px)`;
+    dots.appendChild(d);
+  }
+</script>
+</body>
+</html>

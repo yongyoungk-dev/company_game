@@ -1,0 +1,42 @@
+[디자인 시트 01] 타이틀 로고 & 앱 아이콘
+참고 이미지: sheet_01_logo_icon.png
+사이즈: 1600x900 (16:9)
+
+※ 이미지 생성 AI는 한글 글자를 자주 틀리게 그립니다.
+  글자가 깨지면 '글자 없는 버전' 프롬프트로 그림만 만들고, 한글은 디자인 툴에서 올려주세요.
+
+──────────────────────────────
+■ 시트 전체 프롬프트 (1600x900 한 장)
+──────────────────────────────
+A game UI design sheet, 16:9, 1600x900. Dark purple night background (#1b1033 to #2a1850 radial gradient).
+Left large panel: a playful Korean party-game title logo reading "복불복" in big chunky rounded bold letters,
+first letter "복" in golden yellow (#ffc53d), middle letter "불" in bright red (#ff4d4f), last letter "복" in white,
+each letter slightly tilted with thick dark outlines and a glossy 3D bevel, below it smaller white text "제비뽑기"
+with a soft purple glow. Small confetti, sparkles and clinking beer mugs around the logo.
+Right panel: a rounded-square mobile app icon, purple gradient (#a78bfa to #5b21b6), with a simple 4-segment
+roulette wheel in yellow and red with a white rim and a white center hub.
+Clean dashed-border panels, small captions under each asset, color palette swatches in the top right corner.
+Style: glossy 3D cartoon, vibrant, fun company dinner party mood, high quality game asset presentation.
+
+──────────────────────────────
+■ 개별 에셋 프롬프트
+──────────────────────────────
+[logo_title.png · 1200x360 · 투명 배경]
+Korean game title logo "복불복 제비뽑기", chunky rounded bold Hangul letters, "복" golden yellow, "불" bright red,
+last "복" white, thick dark outlines, glossy 3D bevel, slight playful tilt, sparkles and confetti accents,
+isolated on transparent background, game logo, vector-like clean edges.
+
+[logo_title 글자 없는 버전 · 1200x360]
+Decorative game title frame for a party game logo, empty space in the center for text, golden and red ribbons,
+sparkles, confetti, clinking beer mugs on both sides, glossy 3D cartoon style, transparent background, no text.
+
+[app_icon.png · 512x512]
+Mobile app icon, rounded square, purple gradient background (#a78bfa to #5b21b6), a simple glossy roulette wheel
+with 4 segments alternating golden yellow and red, thick white rim, white center hub, soft drop shadow,
+minimal, readable at small sizes, no text.
+
+──────────────────────────────
+■ 네거티브 프롬프트 (지원하는 툴에서만)
+──────────────────────────────
+blurry, low resolution, distorted letters, misspelled text, extra letters, watermark, signature,
+photorealistic, dull colors, cluttered background

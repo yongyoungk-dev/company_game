@@ -1,0 +1,38 @@
+[디자인 시트 03] 제비뽑기 상자 3종 (복 상자 / 불 상자 / 수행자 상자)
+참고 이미지: sheet_03_boxes.png
+사이즈: 1600x900 (16:9)
+
+※ 세 상자는 모양과 각도가 같고 색과 표정만 달라야 앱에서 자연스럽습니다.
+  같은 프롬프트에서 색상 문구만 바꿔 생성하세요.
+
+──────────────────────────────
+■ 시트 전체 프롬프트 (1600x900 한 장)
+──────────────────────────────
+A game UI design sheet, 16:9, 1600x900, dark purple night background (#1b1033).
+Three equal dashed-border panels side by side, each containing a cute cartoon lottery draw box of identical shape,
+3/4 front view, rounded cube with a dark oval hand hole on the top, a few cream-colored folded paper slips
+peeking out of the hole.
+Left box: golden yellow (#ffc53d) with a big laughing happy face and a small ribbon label "복 상자".
+Middle box: bright red (#ff4d4f) with a shocked screaming face and label "불 상자".
+Right box: purple (#8b5cf6) with a cheerful face raising one hand and label "수행자 상자".
+Small captions under each panel, palette swatches top right.
+Style: glossy 3D clay cartoon, soft lighting, rounded shapes, cute and funny, company party game.
+
+──────────────────────────────
+■ 개별 에셋 프롬프트 (800x700 · 투명 배경)
+──────────────────────────────
+[box_bok.png]
+Cute glossy 3D clay cartoon lottery draw box, rounded cube, 3/4 front view, dark oval hand hole on top with
+cream folded paper slips peeking out, golden yellow (#ffc53d) body with warm highlights, big laughing happy face
+on the front, soft shadow underneath, isolated on transparent background, no text.
+
+[box_bul.png]
+(위와 동일) ... bright red (#ff4d4f) body, shocked screaming face with hands on cheeks on the front ...
+
+[box_person.png]
+(위와 동일) ... purple (#8b5cf6) body, cheerful face with one small hand raised on the front ...
+
+──────────────────────────────
+■ 네거티브 프롬프트
+──────────────────────────────
+realistic cardboard, scary, creepy face, different box shapes, text, watermark, blurry, cluttered
