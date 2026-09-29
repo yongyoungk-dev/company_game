@@ -186,6 +186,8 @@
   .counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .counts label { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
   .counts input { width: 100%; text-align: center; }
+  .count-group { font-size: 13px; font-weight: 800; margin: 10px 0 6px; }
+  .count-group.bok { color: var(--bok); } .count-group.bul { color: var(--bul); }
   .toast {
     position: fixed; left: 50%; bottom: calc(30px + env(safe-area-inset-bottom)); transform: translateX(-50%);
     background: #000c; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 20;
@@ -253,11 +255,10 @@
   <div class="sec">
     <h3>📦 제비 수량</h3>
     <p class="hint">수량 변경은 게임 초기화 시 반영됩니다.</p>
-    <div class="counts">
-      <label>☕ 커피카드 (복)<input type="number" id="cntCoffee" min="0" max="50" inputmode="numeric"></label>
-      <label>🍻 건배사 (불)<input type="number" id="cntToast" min="0" max="50" inputmode="numeric"></label>
-      <label>✍️ 삼행시 (불)<input type="number" id="cntPoem" min="0" max="50" inputmode="numeric"></label>
-    </div>
+    <div class="count-group bok">😆 복 상자</div>
+    <div class="counts" id="countsBok"></div>
+    <div class="count-group bul">😱 불 상자</div>
+    <div class="counts" id="countsBul"></div>
   </div>
 
   <div class="sec">
@@ -272,11 +273,16 @@
 <script>
 (() => {
   const STORE_KEY = 'bokbulbok-v1';
+  // 제비 종류 (count = 기본 수량)
   const PAPER = {
-    coffee: { emoji: '☕', name: '커피카드', side: 'bok' },
-    toast:  { emoji: '🍻', name: '건배사',   side: 'bul' },
-    poem:   { emoji: '✍️', name: '삼행시',   side: 'bul' },
+    coffee:  { emoji: '☕', name: '커피카드',   side: 'bok', count: 3, sub: '축하합니다! 커피 한 잔의 행운', msg: '당첨! 커피카드를 받아가세요 🎉' },
+    charger: { emoji: '🔌', name: '무선충전기', side: 'bok', count: 1, sub: '축하합니다! 무선충전기 당첨',   msg: '당첨! 무선충전기를 받아가세요 🎉' },
+    battery: { emoji: '🔋', name: '보조배터리', side: 'bok', count: 1, sub: '축하합니다! 보조배터리 당첨',   msg: '당첨! 보조배터리를 받아가세요 🎉' },
+    toast:   { emoji: '🍻', name: '건배사',     side: 'bul', count: 1, sub: '멋진 건배사 한 마디 부탁해요',  msg: '건배사를 해주세요! 🍻' },
+    poem:    { emoji: '✍️', name: '삼행시',     side: 'bul', count: 2, sub: '주제어로 삼행시를 지어주세요',  msg: '삼행시를 지어주세요! ✍️' },
   };
+  const KINDS = Object.keys(PAPER);
+  const defaultCounts = () => Object.fromEntries(KINDS.map(k => [k, PAPER[k].count]));
   const SEGMENTS = 8; // 룰렛 칸 수 (짝수 칸 = 복, 홀수 칸 = 불)
 
   const $ = (id) => document.getElementById(id);
@@ -286,16 +292,17 @@
     settings: {
       people: [],
       topics: ['회식날', '금요일', '팀워크'],
-      counts: { coffee: 3, toast: 1, poem: 2 },
+      counts: defaultCounts(),
     },
     game: null,
   });
 
   function newGame(settings) {
     const bok = [], bul = [];
-    for (let i = 0; i < settings.counts.coffee; i++) bok.push('coffee');
-    for (let i = 0; i < settings.counts.toast; i++) bul.push('toast');
-    for (let i = 0; i < settings.counts.poem; i++) bul.push('poem');
+    for (const k of KINDS) {
+      const box = PAPER[k].side === 'bok' ? bok : bul;
+      for (let i = 0; i < settings.counts[k]; i++) box.push(k);
+    }
     return { bok, bul, usedPeople: [], usedTopics: [], history: [], round: null, rotation: 0 };
   }
 
@@ -303,6 +310,7 @@
     try {
       const s = JSON.parse(localStorage.getItem(STORE_KEY));
       if (s && s.settings) {
+        s.settings.counts = { ...defaultCounts(), ...s.settings.counts }; // 새로 추가된 종류 기본값 채우기
         if (!s.game) s.game = newGame(s.settings);
         return s;
       }
@@ -439,8 +447,7 @@
 
   function paperHTML(r) {
     const p = PAPER[r.paper];
-    const sub = r.paper === 'coffee' ? '축하합니다! 커피 한 잔의 행운' :
-                r.paper === 'toast' ? '멋진 건배사 한 마디 부탁해요' : '주제어로 삼행시를 지어주세요';
+    const sub = p.sub;
     const topic = r.topic ? `<div class="topic">${esc(r.topic)}</div>` : '';
     return `<div class="paper"><div class="emoji">${p.emoji}</div><div class="name">${p.name}</div>${topic}<div class="sub">${sub}</div></div>`;
   }
@@ -448,8 +455,7 @@
   function resultHTML(r) {
     const p = PAPER[r.paper];
     const topic = r.topic ? `<div class="topic">${esc(r.topic)}</div>` : '';
-    const msg = r.side === 'bok' ? '당첨! 커피카드를 받아가세요 🎉' :
-                r.paper === 'toast' ? '건배사를 해주세요! 🍻' : '삼행시를 지어주세요! ✍️';
+    const msg = p.msg;
     return `<div class="stage-title">${r.side === 'bok' ? '🎉 복 당첨 🎉' : '🔥 불 당첨 🔥'}</div>
       <div class="result ${r.side}">
         <div class="who">${esc(r.person)}</div>
@@ -605,11 +611,15 @@
     $('sheet').classList.add('open');
     $('sheetBg').classList.add('open');
   }
-  function closeSettings() {
+  function readCounts() {
     const c = state.settings.counts;
-    c.coffee = clampCount($('cntCoffee').value, c.coffee);
-    c.toast = clampCount($('cntToast').value, c.toast);
-    c.poem = clampCount($('cntPoem').value, c.poem);
+    for (const k of KINDS) {
+      const el = $('cnt-' + k);
+      if (el) c[k] = clampCount(el.value, c[k]);
+    }
+  }
+  function closeSettings() {
+    readCounts();
     save();
     $('sheet').classList.remove('open');
     $('sheetBg').classList.remove('open');
@@ -630,9 +640,11 @@
       `<span class="c ${usedT.includes(t) ? 'used' : ''}">${esc(t)}<button data-del-topic="${i}" aria-label="삭제">✕</button></span>`
     ).join('') || '<span class="hint">등록된 주제어가 없어요</span>';
     const c = state.settings.counts;
-    $('cntCoffee').value = c.coffee;
-    $('cntToast').value = c.toast;
-    $('cntPoem').value = c.poem;
+    for (const side of ['bok', 'bul']) {
+      $(side === 'bok' ? 'countsBok' : 'countsBul').innerHTML = KINDS.filter(k => PAPER[k].side === side).map(k =>
+        `<label>${PAPER[k].emoji} ${PAPER[k].name}<input type="number" id="cnt-${k}" min="0" max="50" inputmode="numeric" value="${c[k]}"></label>`
+      ).join('');
+    }
   }
 
   function addItems(inputId, list, label) {
@@ -677,10 +689,7 @@
   $('resetBtn').onclick = () => {
     if (busy) { toast('진행 중인 애니메이션이 끝난 후 초기화해주세요'); return; }
     if (!confirm('게임을 초기화할까요?\n모든 제비와 수행자가 상자로 돌아가고 기록이 삭제됩니다.')) return;
-    const c = state.settings.counts;
-    c.coffee = clampCount($('cntCoffee').value, c.coffee);
-    c.toast = clampCount($('cntToast').value, c.toast);
-    c.poem = clampCount($('cntPoem').value, c.poem);
+    readCounts();
     state.game = newGame(state.settings);
     save();
     renderSettings();
