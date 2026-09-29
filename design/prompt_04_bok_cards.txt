@@ -3,12 +3,12 @@
 첨부한 sheet_04_bok_cards.png는 구성과 배치를 보여주는 참고 시안입니다.
 시안의 레이아웃, 색상, 에셋 구성은 그대로 유지하고, 퀄리티만 완성도 높은 게임 아트로 업그레이드해서
 아래 "시트 전체 프롬프트" 내용대로 1600x900(16:9) 이미지 한 장을 만들어 주세요.
-한글은 "커피카드", "무선충전기", "보조배터리", "복" 로 정확하게 써 주세요.
+한글은 "커피카드", "보조배터리", "무선마우스", "츄파춥스", "복" 로 정확하게 써 주세요.
 (개별 에셋이 필요할 때는 아래 "개별 에셋 프롬프트"를 하나씩 따로 요청하면 됩니다.)
 
 ========================================================================
 
-[디자인 시트 04] 복 제비 · 상품 카드 3종 (커피카드 / 무선충전기 / 보조배터리)
+[디자인 시트 04] 복 제비 · 상품 카드 4종 (커피카드 / 보조배터리 / 무선마우스 / 츄파춥스)
 참고 이미지: sheet_04_bok_cards.png
 사이즈: 1600x900 (16:9)
 
@@ -18,13 +18,14 @@
 ■ 시트 전체 프롬프트 (1600x900 한 장)
 ──────────────────────────────
 A game UI design sheet, 16:9, 1600x900, dark purple night background (#1b1033).
-Three equal dashed-border panels, each with a vertical prize card that looks like an unfolded lottery paper slip:
+Four equal dashed-border panels, each with a vertical prize card that looks like an unfolded lottery paper slip:
 cream paper (#fffdf5), rounded corners, subtle dashed inner border, soft drop shadow.
 In the upper center of each card a golden circular badge (#ffd666 to #fff3c4 radial) containing a cute glossy
 3D illustration:
 card 1: a steaming coffee cup with a small coffee gift card tucked beside it, Korean text "커피카드";
-card 2: a sleek round wireless charging pad with a smartphone on it and a soft glowing charging ring, Korean text "무선충전기";
-card 3: a compact portable power bank with a lightning bolt icon and a USB cable, Korean text "보조배터리".
+card 2: a compact portable power bank with a lightning bolt icon and a USB cable, Korean text "보조배터리";
+card 3: a sleek ergonomic wireless computer mouse with a tiny USB receiver and small wireless signal waves, Korean text "무선마우스";
+card 4: a bunch of three colorful round swirl lollipops on sticks wrapped in shiny candy wrappers, Korean text "츄파춥스".
 Under each name a small golden pill tag "복". Small captions below each panel, palette swatches top right.
 Style: glossy 3D cartoon, lucky and celebratory, warm golden highlights, sparkles.
 
@@ -36,19 +37,23 @@ Vertical prize card like an unfolded lottery paper slip, cream paper (#fffdf5), 
 upper center golden round badge with a cute glossy 3D steaming coffee cup and a small coffee gift card,
 sparkles around, empty space at the bottom for text, no text.
 
-[card_charger.png]
-(위와 동일) ... golden round badge with a cute glossy 3D round wireless charging pad with a smartphone on it
-and a soft glowing blue charging ring ...
-
 [card_battery.png]
 (위와 동일) ... golden round badge with a cute glossy 3D compact portable power bank with a lightning bolt icon
 and a short USB cable ...
 
+[card_mouse.png]
+(위와 동일) ... golden round badge with a cute glossy 3D sleek ergonomic wireless computer mouse, a tiny USB
+receiver beside it and small wireless signal waves ...
+
+[card_chupa.png]
+(위와 동일) ... golden round badge with a cute glossy 3D bunch of three colorful round swirl lollipops on sticks,
+wrapped in shiny candy wrappers ...
+
 (일러스트만 필요할 때, 400x400 투명 배경)
-Cute glossy 3D cartoon icon of [a steaming coffee cup / a wireless charging pad with a smartphone /
-a portable power bank with a lightning bolt], soft lighting, isolated on transparent background, no text.
+Cute glossy 3D cartoon icon of [a steaming coffee cup / a portable power bank with a lightning bolt /
+a wireless computer mouse / colorful swirl lollipops], soft lighting, isolated on transparent background, no text.
 
 ──────────────────────────────
 ■ 네거티브 프롬프트
 ──────────────────────────────
-brand logo, Apple logo, Samsung logo, Starbucks logo, realistic photo, misspelled text, watermark, blurry
+brand logo, Apple logo, Samsung logo, Starbucks logo, Logitech logo, Chupa Chups logo, realistic photo, misspelled text, watermark, blurry

@@ -179,7 +179,7 @@
   .chips .c { display: inline-flex; align-items: center; gap: 4px; background: #ffffff18; border-radius: 99px; padding: 6px 6px 6px 12px; font-size: 15px; }
   .chips .c.used { opacity: .5; text-decoration: line-through; }
   .chips .c button { border: 0; background: #ffffff22; color: #fff; width: 24px; height: 24px; border-radius: 50%; font-size: 13px; line-height: 1; }
-  .counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .counts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .counts label { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
   .counts input { width: 100%; text-align: center; }
   .count-group { font-size: 13px; font-weight: 800; margin: 10px 0 6px; }
@@ -272,12 +272,18 @@
   // 제비 종류 (count = 기본 수량)
   const PAPER = {
     coffee:  { emoji: '☕', name: '커피카드',   side: 'bok', count: 3, img: 'assets/card_coffee.webp', msg: '당첨! 커피카드를 받아가세요 🎉' },
-    charger: { emoji: '🔌', name: '무선충전기', side: 'bok', count: 1, img: 'assets/card_charger.webp',   msg: '당첨! 무선충전기를 받아가세요 🎉' },
     battery: { emoji: '🔋', name: '보조배터리', side: 'bok', count: 1, img: 'assets/card_battery.webp',   msg: '당첨! 보조배터리를 받아가세요 🎉' },
+    mouse:   { emoji: '🖱️', name: '무선마우스', side: 'bok', count: 1, img: 'assets/card_mouse.webp',     msg: '당첨! 무선마우스를 받아가세요 🎉' },
+    chupa:   { emoji: '🍭', name: '츄파춥스',   side: 'bok', count: 1, img: 'assets/card_chupa.webp',     msg: '당첨! 츄파춥스를 받아가세요 🍭' },
     toast:   { emoji: '🍻', name: '건배사',     side: 'bul', count: 1, img: 'assets/card_toast.webp',  msg: '건배사를 해주세요! 🍻' },
     poem:    { emoji: '✍️', name: '삼행시',     side: 'bul', count: 2, img: 'assets/card_poem.webp',  msg: '삼행시를 지어주세요! ✍️' },
   };
   const KINDS = Object.keys(PAPER);
+  // 이전 버전에만 있던 상품 (진행 기록 표시용)
+  const RETIRED = {
+    charger: { emoji: '🔌', name: '무선충전기', side: 'bok', img: 'assets/card_charger.webp', msg: '당첨! 무선충전기를 받아가세요 🎉' },
+  };
+  const paperOf = (k) => PAPER[k] || RETIRED[k] || { emoji: '📄', name: k, img: '', msg: '' };
   const defaultCounts = () => Object.fromEntries(KINDS.map(k => [k, PAPER[k].count]));
   const SEGMENTS = 8; // 룰렛 칸 수 (짝수 칸 = 복, 홀수 칸 = 불)
 
@@ -306,7 +312,14 @@
     try {
       const s = JSON.parse(localStorage.getItem(STORE_KEY));
       if (s && s.settings) {
-        s.settings.counts = { ...defaultCounts(), ...s.settings.counts }; // 새로 추가된 종류 기본값 채우기
+        // 새로 추가된 종류는 기본값으로 채우고, 없어진 종류는 설정과 상자에서 뺌
+        const saved = s.settings.counts || {};
+        s.settings.counts = Object.fromEntries(KINDS.map(k => [k, k in saved ? saved[k] : PAPER[k].count]));
+        if (s.game) {
+          s.game.bok = s.game.bok.filter(k => KINDS.includes(k));
+          s.game.bul = s.game.bul.filter(k => KINDS.includes(k));
+          if (s.game.round && s.game.round.paper && !KINDS.includes(s.game.round.paper) && s.game.round.step < 3) s.game.round = null;
+        }
         if (!s.game) s.game = newGame(s.settings);
         return s;
       }
@@ -353,7 +366,7 @@
     const ol = $('history');
     if (!h.length) { ol.innerHTML = '<li class="empty">아직 기록이 없어요</li>'; return; }
     ol.innerHTML = h.slice().reverse().map((r, idx) => {
-      const p = PAPER[r.paper];
+      const p = paperOf(r.paper);
       const topic = r.topic ? ` <b>「${esc(r.topic)}」</b>` : '';
       return `<li><span class="no">${h.length - idx}</span>
         <span class="chip ${r.side}">${r.side === 'bok' ? '복' : '불'}</span>
@@ -446,13 +459,13 @@
   }
 
   function paperHTML(r, small) {
-    const p = PAPER[r.paper];
+    const p = paperOf(r.paper);
     const topic = r.topic ? `<div class="topic-ov">${esc(r.topic)}</div>` : '';
     return `<div class="card-img${small ? ' small' : ''}"><img src="${p.img}" alt="${p.name}">${topic}</div>`;
   }
 
   function resultHTML(r) {
-    const p = PAPER[r.paper];
+    const p = paperOf(r.paper);
     return `<div class="stage-title">${r.side === 'bok' ? '🎉 복 당첨 🎉' : '🔥 불 당첨 🔥'}</div>
       <div class="result ${r.side}">
         <div class="who">${esc(r.person)}</div>
