@@ -40,10 +40,17 @@ save(cutout(S[4].crop((1072,562,1328,762))), 'badge_bok.png', 400)
 save(cutout(S[4].crop((1330,562,1588,762))), 'badge_bul.png', 400)
 for n,b in (('box_bok',(70,215,555,725)),('box_bul',(598,215,1080,725)),('box_person',(1125,215,1605,725))):
     save(cutout(S[3].crop(b)), n+'.png', 480)
-# 복 상품 카드 4종: 두 번째로 받은 시트 04 (커피카드 / 보조배터리 / 무선마우스 / 츄파춥스)
-S4v2=Image.open(D+'sheet_04_v2.webp').convert('RGB')
-for n,b in (('card_coffee',(68,200,425,745)),('card_battery',(462,200,820,745)),('card_mouse',(858,200,1214,745)),('card_chupa',(1252,200,1608,745))):
-    save(cutout(S4v2.crop(b)), n+'.png', 420)
+# 복 상품 카드 4종: 세 번째로 받은 시트 04 (리본 스타일)
+S4=np.array(Image.open(D+'sheet_04_v3.webp').convert('RGB')).astype(int)
+# 리본 끝이 패널 점선 테두리에 겹치므로, 점선(회색) 픽셀을 배경색으로 덮은 뒤 자름
+bgc=np.median(S4[300:600,5:40].reshape(-1,3),axis=0)
+for bx in (60,432,457,826,851,1219,1245,1618):
+    for x in range(bx-3,bx+4):
+        col=S4[:,x]; warm=(col[:,0]-col[:,2])>40   # 리본(노랑)은 유지
+        col[~warm]=bgc
+S4v3=Image.fromarray(S4.astype('uint8'))
+for n,b in (('card_coffee',(45,215,446,738)),('card_battery',(446,215,839,738)),('card_mouse',(839,215,1233,738)),('card_chupa',(1233,215,1634,738))):
+    save(cutout(S4v3.crop(b)), n+'.png', 440)
 for n,b in (('card_toast',(72,180,556,778)),('card_poem',(598,180,1082,778))):
     save(cutout(S[1].crop(b)), n+'.png', 480)
 bg=S[1].crop((1240,226,1488,742)).resize((540,1124),Image.LANCZOS).filter(ImageFilter.GaussianBlur(2))
