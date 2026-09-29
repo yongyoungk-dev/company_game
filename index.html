@@ -120,6 +120,8 @@
 
   @keyframes pop { from { transform: scale(.3) rotate(-10deg); opacity: 0; } to { transform: none; opacity: 1; } }
 
+  .who-chip { font-size: 15px; color: var(--muted); text-align: center; }
+  .who-chip b { display: block; font-size: 30px; color: var(--bok); margin-top: 2px; }
   .slot { font-size: 38px; font-weight: 900; min-height: 52px; text-align: center; }
   .slot.final { color: var(--bok); animation: pop .5s cubic-bezier(.2,1.6,.4,1); }
 
@@ -208,7 +210,7 @@
   </div>
 
   <div class="steps" id="steps">
-    <span>① 룰렛</span><span>② 제비뽑기</span><span>③ 수행자</span>
+    <span>① 수행자</span><span>② 룰렛</span><span>③ 제비뽑기</span>
   </div>
 
   <div class="stage" id="stage"></div>
@@ -319,6 +321,18 @@
           s.game.bok = s.game.bok.filter(k => KINDS.includes(k));
           s.game.bul = s.game.bul.filter(k => KINDS.includes(k));
           if (s.game.round && s.game.round.paper && !KINDS.includes(s.game.round.paper)) s.game.round = null;
+          // 순서 변경(수행자 → 룰렛 → 제비) 이전에 진행 중이던 라운드: 결과 화면이면 유지, 아니면 뽑은 제비를 상자에 돌려놓고 취소
+          const r = s.game.round;
+          if (r && !r.v) {
+            if (r.step === 3) r.v = 2;
+            else {
+              if (r.paper) {
+                s.game[r.side].push(r.paper);
+                if (r.topic) s.game.usedTopics = s.game.usedTopics.filter(t => t !== r.topic);
+              }
+              s.game.round = null;
+            }
+          }
         }
         if (!s.game) s.game = newGame(s.settings);
         return s;
@@ -355,7 +369,7 @@
   }
 
   function renderSteps(step) {
-    // step: 0 = 대기, 1 = 룰렛 완료, 2 = 종이 완료, 3 = 수행자 완료
+    // step: 0 = 수행자 뽑기, 1 = 룰렛, 2 = 제비뽑기, 3 = 결과
     [...$('steps').children].forEach((el, i) => {
       el.className = i < step ? 'done' : (i === step ? 'on' : '');
     });
@@ -406,7 +420,11 @@
     return null;
   }
 
+  const sideName = (side) => side === 'bok' ? '복' : '불';
+  const whoChip = (r) => `<div class="who-chip">수행자<b>${esc(r.person)}</b></div>`;
+
   // 현재 라운드 상태에 맞춰 화면을 다시 그림 (새로고침 복원 포함)
+  // 진행 순서: 수행자 뽑기 → 복/불 룰렛 → 상자에서 제비뽑기
   function renderStage() {
     const g = state.game;
     const r = g.round;
@@ -414,38 +432,36 @@
     const btn = $('mainBtn');
     renderStatus();
     renderHistory();
+    btn.disabled = false;
 
     if (!r) {
       renderSteps(0);
       const over = gameOverReason();
-      let notice = '';
-      if (!over && !g.bok.length) notice = '<div class="notice">복 제비가 모두 소진되어 룰렛은 무조건 <b>불</b>!</div>';
-      else if (!over && !g.bul.length) notice = '<div class="notice" style="color:var(--bok);background:#ffc53d22">불 제비가 모두 소진되어 룰렛은 무조건 <b>복</b>!</div>';
-      stage.innerHTML = `<div class="stage-title">${over ? esc(over) : '룰렛을 돌려 복/불을 정하세요'}</div>${wheelHTML()}${notice}`;
-      btn.textContent = over ? (state.settings.people.length ? '설정에서 초기화하기' : '설정 열기') : '🎡 룰렛 돌리기';
-      btn.disabled = false;
-      btn.onclick = over ? openSettings : spin;
+      stage.innerHTML = `<div class="stage-title">${over ? esc(over) : '오늘의 주인공은 누구?'}</div>
+        <img class="boximg" id="pbox" src="assets/box_person.webp" alt="수행자 상자">`;
+      btn.textContent = over ? (state.settings.people.length ? '설정에서 초기화하기' : '설정 열기') : '🙋 수행자 뽑기';
+      btn.onclick = over ? openSettings : drawPerson;
       return;
     }
 
     if (r.step === 1) {
       renderSteps(1);
-      stage.innerHTML = `<div class="stage-title">결과는…</div>
-        <img class="badgeimg" src="assets/badge_${r.side}.webp" alt="${r.side === 'bok' ? '복' : '불'}">
-        <img class="boximg" id="box" src="assets/box_${r.side}.webp" alt="${r.side === 'bok' ? '복' : '불'} 상자">`;
-      btn.textContent = `📦 ${r.side === 'bok' ? '복' : '불'} 상자에서 제비뽑기`;
-      btn.disabled = false;
-      btn.onclick = drawPaper;
+      let notice = '';
+      if (!g.bok.length) notice = '<div class="notice">복 제비가 모두 소진되어 룰렛은 무조건 <b>불</b>!</div>';
+      else if (!g.bul.length) notice = '<div class="notice" style="color:var(--bok);background:#ffc53d22">불 제비가 모두 소진되어 룰렛은 무조건 <b>복</b>!</div>';
+      stage.innerHTML = `${whoChip(r)}${wheelHTML()}${notice}`;
+      btn.textContent = '🎡 룰렛 돌리기';
+      btn.onclick = spin;
       return;
     }
 
     if (r.step === 2) {
       renderSteps(2);
-      stage.innerHTML = `<div class="stage-title">뽑힌 제비</div>${paperHTML(r)}
-        <img class="boximg small" id="pbox" src="assets/box_person.webp" alt="수행자 상자">`;
-      btn.textContent = '🙋 수행자 뽑기';
-      btn.disabled = false;
-      btn.onclick = drawPerson;
+      stage.innerHTML = `${whoChip(r)}
+        <img class="badgeimg" src="assets/badge_${r.side}.webp" alt="${sideName(r.side)}">
+        <img class="boximg" id="box" src="assets/box_${r.side}.webp" alt="${sideName(r.side)} 상자">`;
+      btn.textContent = `📦 ${sideName(r.side)} 상자에서 제비뽑기`;
+      btn.onclick = drawPaper;
       return;
     }
 
@@ -453,7 +469,6 @@
       renderSteps(3);
       stage.innerHTML = resultHTML(r);
       btn.textContent = '➡️ 다음 라운드';
-      btn.disabled = false;
       btn.onclick = nextRound;
     }
   }
@@ -475,9 +490,46 @@
   }
 
   // ---------- 게임 진행 ----------
-  function spin() {
+  function drawPerson() {
     if (busy || gameOverReason()) return;
     const g = state.game;
+    const pool = remainingPeople();
+    busy = true;
+    $('mainBtn').disabled = true;
+    renderSteps(0);
+
+    const chosen = pick(pool);
+    $('stage').innerHTML = `<div class="stage-title">두구두구두구…</div>
+      <img class="boximg small shake" src="assets/box_person.webp" alt="수행자 상자"><div class="slot" id="slot"></div>`;
+    const slot = $('slot');
+
+    // 이름이 빠르게 돌다가 점점 느려지며 멈춤
+    let t = 0, delay = 50;
+    const total = 2600;
+    const tick = () => {
+      slot.textContent = pool.length > 1 ? pick(pool) : chosen;
+      t += delay;
+      if (t < total) {
+        delay = Math.min(delay * 1.08, 320);
+        setTimeout(tick, delay);
+      } else {
+        slot.textContent = chosen;
+        slot.classList.add('final');
+        document.querySelector('.boximg.shake')?.classList.remove('shake');
+        g.usedPeople.push(chosen);
+        g.round = { v: 2, step: 1, person: chosen };
+        save();
+        renderStatus();
+        vibrate([80, 50, 120]);
+        setTimeout(() => { busy = false; renderStage(); }, 900);
+      }
+    };
+    tick();
+  }
+
+  function spin() {
+    if (busy) return;
+    const g = state.game, r = g.round;
     busy = true;
     $('mainBtn').disabled = true;
 
@@ -505,7 +557,8 @@
 
     setTimeout(() => {
       g.rotation = rotation % 360;
-      g.round = { step: 1, side };
+      r.side = side;
+      r.step = 2;
       save();
       busy = false;
       vibrate([60, 40, 60]);
@@ -531,53 +584,14 @@
         r.topic = pool.length ? pick(pool) : '???';
         if (!g.usedTopics.includes(r.topic)) g.usedTopics.push(r.topic);
       }
-      r.step = 2;
+      r.step = 3;
+      g.history.push({ side: r.side, paper: r.paper, topic: r.topic || null, person: r.person });
       save();
       busy = false;
       vibrate(50);
       renderStage();
+      if (r.side === 'bok') confetti();
     }, 1400);
-  }
-
-  function drawPerson() {
-    if (busy) return;
-    const g = state.game, r = g.round;
-    const pool = remainingPeople();
-    if (!pool.length) { toast('남은 수행자가 없어요. 설정에서 추가해주세요.'); return; }
-    busy = true;
-    $('mainBtn').disabled = true;
-
-    const chosen = pick(pool);
-    const stage = $('stage');
-    stage.innerHTML = `<div class="stage-title">두구두구두구…</div>${paperHTML(r, true)}<div class="slot" id="slot"></div>`;
-    const slot = $('slot');
-
-    // 이름이 빠르게 돌다가 점점 느려지며 멈춤
-    let t = 0, delay = 50;
-    const total = 2600;
-    const tick = () => {
-      slot.textContent = pool.length > 1 ? pick(pool) : chosen;
-      t += delay;
-      if (t < total) {
-        delay = Math.min(delay * 1.08, 320);
-        setTimeout(tick, delay);
-      } else {
-        slot.textContent = chosen;
-        slot.classList.add('final');
-        r.person = chosen;
-        r.step = 3;
-        g.usedPeople.push(chosen);
-        g.history.push({ side: r.side, paper: r.paper, topic: r.topic || null, person: chosen });
-        save();
-        vibrate([80, 50, 120]);
-        setTimeout(() => {
-          busy = false;
-          renderStage();
-          if (r.side === 'bok') confetti();
-        }, 700);
-      }
-    };
-    tick();
   }
 
   function nextRound() {
