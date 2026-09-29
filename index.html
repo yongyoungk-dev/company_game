@@ -6,11 +6,13 @@
 <meta name="theme-color" content="#1b1033">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>복불복 제비뽑기</title>
+<link rel="icon" href="assets/app_icon.png">
+<link rel="apple-touch-icon" href="assets/app_icon.png">
 <style>
   :root {
     --bg: #1b1033;
     --bg2: #2a1850;
-    --card: #ffffff12;
+    --card: #1b1033a8;
     --line: #ffffff22;
     --text: #fff;
     --muted: #c9bfe6;
@@ -24,10 +26,14 @@
   html, body { margin: 0; height: 100%; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
-    background: radial-gradient(circle at 50% 0%, var(--bg2), var(--bg) 70%) fixed;
+    background: var(--bg);
     color: var(--text);
     touch-action: manipulation;
     -webkit-user-select: none; user-select: none;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(#1b103366, #1b103399), url(assets/bg_mobile.webp) center / cover no-repeat;
   }
   .app {
     max-width: 480px; margin: 0 auto; min-height: 100%;
@@ -35,8 +41,8 @@
     display: flex; flex-direction: column; gap: 14px;
   }
   header { display: flex; align-items: center; justify-content: space-between; }
-  header h1 { font-size: 22px; margin: 0; letter-spacing: -0.5px; }
-  header h1 .b { color: var(--bok); } header h1 .u { color: var(--bul); }
+  header h1 { margin: 0; line-height: 0; }
+  header h1 img { width: 170px; height: auto; margin: -6px 0 -10px -6px; filter: drop-shadow(0 4px 10px #0008); }
   .icon-btn {
     border: 1px solid var(--line); background: var(--card); color: var(--text);
     border-radius: 12px; padding: 8px 12px; font-size: 15px;
@@ -55,50 +61,54 @@
 
   .stage {
     background: var(--card); border: 1px solid var(--line); border-radius: 22px;
-    padding: 18px 14px; min-height: 360px;
+    padding: 18px 14px; min-height: 400px; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
     position: relative; overflow: hidden;
   }
   .stage-title { font-size: 17px; font-weight: 700; text-align: center; }
   .notice { font-size: 13px; color: var(--bul); background: #ff4d4f22; padding: 6px 10px; border-radius: 10px; text-align: center; }
 
-  /* Wheel */
-  .wheel-wrap { position: relative; width: min(72vw, 280px); aspect-ratio: 1; }
+  /* Wheel: 칸은 코드로 그리고, 테두리·전구·GO 버튼은 이미지(roulette_frame.png) */
+  .wheel-wrap { position: relative; width: min(84vw, 330px); aspect-ratio: 1; }
   .pointer {
-    position: absolute; left: 50%; top: -6px; transform: translateX(-50%); z-index: 3;
-    width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent;
-    border-top: 30px solid #fff; filter: drop-shadow(0 3px 3px #0006);
+    position: absolute; left: 50%; top: -4%; width: 17%; transform: translateX(-50%); z-index: 3;
+    filter: drop-shadow(0 4px 4px #0008); pointer-events: none;
   }
   .wheel {
-    width: 100%; height: 100%; border-radius: 50%; position: relative;
-    border: 6px solid #fff; box-shadow: 0 10px 30px #0008, inset 0 0 0 4px #0002;
+    width: 100%; height: 100%; position: relative;
     transition: transform 4.2s cubic-bezier(.17,.67,.12,1);
   }
-  .wheel .lbl {
-    position: absolute; inset: 0; text-align: center;
-    font-weight: 900; font-size: 26px; color: #fff; text-shadow: 0 2px 4px #0006;
+  .wheel .frame { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+  .hubimg { position: absolute; left: 50%; top: 50%; width: 25%; transform: translate(-50%, -50%); z-index: 3; pointer-events: none;
+    filter: drop-shadow(0 3px 6px #0007); }
+  .segs { position: absolute; inset: 9.4%; border-radius: 50%; overflow: hidden; }
+  .segs::after {
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #0000 28%, #fff2 55%, #0000 70%, #0003 100%);
   }
-  .wheel .lbl b { display: inline-block; margin-top: 12%; }
-  .hub {
-    position: absolute; left: 50%; top: 50%; width: 22%; height: 22%; transform: translate(-50%,-50%);
-    border-radius: 50%; background: #fff; box-shadow: 0 2px 8px #0006; z-index: 2;
-    display: grid; place-items: center; font-weight: 900; color: var(--bg); font-size: 14px;
-  }
+  .segs .lbl { position: absolute; inset: 0; text-align: center; font-weight: 900; font-size: min(8.5vw, 34px); z-index: 1; }
+  .segs .lbl b { display: inline-block; margin-top: 10%; }
+  .segs .lbl.bok b { color: #4a2600; text-shadow: 0 2px 0 #fff8; }
+  .segs .lbl.bul b { color: #fff; text-shadow: 2px 2px 0 #a8101a, -2px -2px 0 #a8101a, 2px -2px 0 #a8101a, -2px 2px 0 #a8101a, 0 4px 4px #0006; }
 
-  /* Box */
-  .box {
-    width: 180px; height: 150px; border-radius: 18px; position: relative;
-    display: grid; place-items: center; font-size: 64px;
-    box-shadow: 0 12px 30px #0008;
+  /* Box / 카드 이미지 */
+  .boximg { width: min(60vw, 230px); height: auto; filter: drop-shadow(0 12px 20px #0008); }
+  .boximg.small { width: min(34vw, 130px); }
+  .badgeimg { width: min(34vw, 130px); height: auto; animation: pop .5s cubic-bezier(.2,1.6,.4,1); filter: drop-shadow(0 8px 14px #0008); }
+  .card-img { position: relative; width: min(48vw, 190px); animation: pop .55s cubic-bezier(.2,1.6,.4,1); filter: drop-shadow(0 10px 20px #0009); }
+  .card-img.small { width: min(36vw, 140px); }
+  .card-img img { width: 100%; height: auto; display: block; }
+  /* 삼행시 카드의 ○○○ 칸 위에 주제어 표시 */
+  .card-img .topic-ov {
+    position: absolute; left: 25.5%; width: 49%; top: 75.2%; height: 12.6%;
+    background: #fbe7a1; border-radius: 8px; display: grid; place-items: center;
+    color: #3a2340; font-weight: 900; font-size: min(5.6vw, 22px); letter-spacing: 3px; white-space: nowrap;
   }
-  .box.bok { background: linear-gradient(160deg, var(--bok), var(--bok-dark)); }
-  .box.bul { background: linear-gradient(160deg, var(--bul), var(--bul-dark)); }
-  .box.person { background: linear-gradient(160deg, #8b5cf6, #5b21b6); }
-  .box::before {
-    content: ""; position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
-    width: 70px; height: 12px; border-radius: 99px; background: #0005;
+  .card-img.small .topic-ov { font-size: min(4vw, 15px); letter-spacing: 1px; border-radius: 5px; }
+  @media (max-height: 700px) {
+    .card-img { width: min(40vw, 160px); } .boximg { width: min(50vw, 190px); } .boximg.small { width: min(28vw, 110px); }
+    .card-img .topic-ov { font-size: min(4.6vw, 18px); }
   }
-  .box .tag { position: absolute; bottom: 10px; font-size: 16px; font-weight: 800; color: #fff; }
   .shake { animation: shake .5s ease-in-out infinite; }
   @keyframes shake {
     0%,100% { transform: rotate(0) translateY(0); }
@@ -108,24 +118,10 @@
     80% { transform: rotate(4deg); }
   }
 
-  .paper {
-    background: #fffdf5; color: #2b2340; border-radius: 14px; padding: 22px 18px;
-    width: 100%; text-align: center; box-shadow: 0 10px 24px #0007;
-    animation: pop .55s cubic-bezier(.2,1.6,.4,1);
-  }
   @keyframes pop { from { transform: scale(.3) rotate(-10deg); opacity: 0; } to { transform: none; opacity: 1; } }
-  .paper .emoji { font-size: 48px; }
-  .paper .name { font-size: 26px; font-weight: 900; margin-top: 6px; }
-  .paper .sub { font-size: 16px; margin-top: 8px; color: #6b5f86; }
-  .paper .topic { display: inline-block; margin-top: 10px; font-size: 30px; font-weight: 900; letter-spacing: 6px;
-    background: #ffe7a3; padding: 6px 14px; border-radius: 10px; color: #2b2340; }
 
   .slot { font-size: 38px; font-weight: 900; min-height: 52px; text-align: center; }
   .slot.final { color: var(--bok); animation: pop .5s cubic-bezier(.2,1.6,.4,1); }
-
-  .side-badge { font-size: 44px; font-weight: 900; padding: 6px 28px; border-radius: 16px; animation: pop .5s cubic-bezier(.2,1.6,.4,1); }
-  .side-badge.bok { background: var(--bok); color: #3a2800; }
-  .side-badge.bul { background: var(--bul); color: #fff; }
 
   .result {
     width: 100%; border-radius: 18px; padding: 18px; text-align: center; animation: pop .55s cubic-bezier(.2,1.6,.4,1);
@@ -134,8 +130,8 @@
   .result.bul { background: linear-gradient(160deg, #ff4d4f33, #ff4d4f11); border: 2px solid var(--bul); }
   .result .who { font-size: 34px; font-weight: 900; }
   .result .what { font-size: 20px; margin-top: 8px; font-weight: 700; }
-  .result .topic { display: inline-block; margin-top: 10px; font-size: 32px; font-weight: 900; letter-spacing: 8px;
-    background: #fff; color: #2b2340; padding: 6px 16px; border-radius: 12px; }
+  .result .row2 { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 10px; }
+  .result .msg { font-size: 16px; margin-top: 10px; color: var(--muted); }
 
   .btn {
     width: 100%; border: 0; border-radius: 16px; padding: 18px; font-size: 19px; font-weight: 800;
@@ -201,7 +197,7 @@
 <body>
 <div class="app">
   <header>
-    <h1><span class="b">복</span><span class="u">불</span>복 제비뽑기</h1>
+    <h1><img src="assets/logo_title.webp" alt="복불복 제비뽑기"></h1>
     <button class="icon-btn" id="openSettings">⚙️ 설정</button>
   </header>
 
@@ -275,11 +271,11 @@
   const STORE_KEY = 'bokbulbok-v1';
   // 제비 종류 (count = 기본 수량)
   const PAPER = {
-    coffee:  { emoji: '☕', name: '커피카드',   side: 'bok', count: 3, sub: '축하합니다! 커피 한 잔의 행운', msg: '당첨! 커피카드를 받아가세요 🎉' },
-    charger: { emoji: '🔌', name: '무선충전기', side: 'bok', count: 1, sub: '축하합니다! 무선충전기 당첨',   msg: '당첨! 무선충전기를 받아가세요 🎉' },
-    battery: { emoji: '🔋', name: '보조배터리', side: 'bok', count: 1, sub: '축하합니다! 보조배터리 당첨',   msg: '당첨! 보조배터리를 받아가세요 🎉' },
-    toast:   { emoji: '🍻', name: '건배사',     side: 'bul', count: 1, sub: '멋진 건배사 한 마디 부탁해요',  msg: '건배사를 해주세요! 🍻' },
-    poem:    { emoji: '✍️', name: '삼행시',     side: 'bul', count: 2, sub: '주제어로 삼행시를 지어주세요',  msg: '삼행시를 지어주세요! ✍️' },
+    coffee:  { emoji: '☕', name: '커피카드',   side: 'bok', count: 3, img: 'assets/card_coffee.webp', msg: '당첨! 커피카드를 받아가세요 🎉' },
+    charger: { emoji: '🔌', name: '무선충전기', side: 'bok', count: 1, img: 'assets/card_charger.webp',   msg: '당첨! 무선충전기를 받아가세요 🎉' },
+    battery: { emoji: '🔋', name: '보조배터리', side: 'bok', count: 1, img: 'assets/card_battery.webp',   msg: '당첨! 보조배터리를 받아가세요 🎉' },
+    toast:   { emoji: '🍻', name: '건배사',     side: 'bul', count: 1, img: 'assets/card_toast.webp',  msg: '건배사를 해주세요! 🍻' },
+    poem:    { emoji: '✍️', name: '삼행시',     side: 'bul', count: 2, img: 'assets/card_poem.webp',  msg: '삼행시를 지어주세요! ✍️' },
   };
   const KINDS = Object.keys(PAPER);
   const defaultCounts = () => Object.fromEntries(KINDS.map(k => [k, PAPER[k].count]));
@@ -375,14 +371,18 @@
     const stops = [];
     const labels = [];
     for (let i = 0; i < SEGMENTS; i++) {
-      const color = i % 2 === 0 ? 'var(--bok)' : 'var(--bul)';
-      stops.push(`${color} ${i * seg}deg ${(i + 1) * seg}deg`);
-      labels.push(`<div class="lbl" style="transform: rotate(${i * seg + seg / 2}deg)"><b>${i % 2 === 0 ? '복' : '불'}</b></div>`);
+      const bok = i % 2 === 0;
+      const [c1, c2] = bok ? ['#ffd23f', '#ffb21a'] : ['#ff5a4e', '#e8262e'];
+      const a0 = i * seg;
+      // 칸 사이 얇은 흰 구분선 + 칸 안쪽 약한 색 변화
+      stops.push(`#fff6 ${a0}deg ${a0 + 0.8}deg`, `${c1} ${a0 + 0.8}deg`, `${c2} ${a0 + seg - 0.8}deg`, `#fff6 ${a0 + seg - 0.8}deg ${a0 + seg}deg`);
+      labels.push(`<div class="lbl ${bok ? 'bok' : 'bul'}" style="transform: rotate(${a0 + seg / 2}deg)"><b>${bok ? '복' : '불'}</b></div>`);
     }
-    return `<div class="wheel-wrap"><div class="pointer"></div>
-      <div class="wheel" id="wheel" style="background: conic-gradient(${stops.join(',')}); transform: rotate(${state.game.rotation}deg)">
-        ${labels.join('')}
-      </div><div class="hub">GO</div></div>`;
+    return `<div class="wheel-wrap"><img class="pointer" src="assets/roulette_pointer.webp" alt="">
+      <div class="wheel" id="wheel" style="transform: rotate(${state.game.rotation}deg)">
+        <div class="segs" style="background: conic-gradient(${stops.join(',')})">${labels.join('')}</div>
+        <img class="frame" src="assets/roulette_frame.webp" alt="">
+      </div><img class="hubimg" src="assets/roulette_hub.webp" alt=""></div>`;
   }
 
   function gameOverReason() {
@@ -418,8 +418,8 @@
     if (r.step === 1) {
       renderSteps(1);
       stage.innerHTML = `<div class="stage-title">결과는…</div>
-        <div class="side-badge ${r.side}">${r.side === 'bok' ? '복 😆' : '불 😱'}</div>
-        <div class="box ${r.side}" id="box">📦<span class="tag">${r.side === 'bok' ? '복' : '불'} 상자</span></div>`;
+        <img class="badgeimg" src="assets/badge_${r.side}.webp" alt="${r.side === 'bok' ? '복' : '불'}">
+        <img class="boximg" id="box" src="assets/box_${r.side}.webp" alt="${r.side === 'bok' ? '복' : '불'} 상자">`;
       btn.textContent = `📦 ${r.side === 'bok' ? '복' : '불'} 상자에서 제비뽑기`;
       btn.disabled = false;
       btn.onclick = drawPaper;
@@ -429,7 +429,7 @@
     if (r.step === 2) {
       renderSteps(2);
       stage.innerHTML = `<div class="stage-title">뽑힌 제비</div>${paperHTML(r)}
-        <div class="box person" style="width:140px;height:110px;font-size:48px" id="pbox">🙋<span class="tag">수행자 상자</span></div>`;
+        <img class="boximg small" id="pbox" src="assets/box_person.webp" alt="수행자 상자">`;
       btn.textContent = '🙋 수행자 뽑기';
       btn.disabled = false;
       btn.onclick = drawPerson;
@@ -445,23 +445,19 @@
     }
   }
 
-  function paperHTML(r) {
+  function paperHTML(r, small) {
     const p = PAPER[r.paper];
-    const sub = p.sub;
-    const topic = r.topic ? `<div class="topic">${esc(r.topic)}</div>` : '';
-    return `<div class="paper"><div class="emoji">${p.emoji}</div><div class="name">${p.name}</div>${topic}<div class="sub">${sub}</div></div>`;
+    const topic = r.topic ? `<div class="topic-ov">${esc(r.topic)}</div>` : '';
+    return `<div class="card-img${small ? ' small' : ''}"><img src="${p.img}" alt="${p.name}">${topic}</div>`;
   }
 
   function resultHTML(r) {
     const p = PAPER[r.paper];
-    const topic = r.topic ? `<div class="topic">${esc(r.topic)}</div>` : '';
-    const msg = p.msg;
     return `<div class="stage-title">${r.side === 'bok' ? '🎉 복 당첨 🎉' : '🔥 불 당첨 🔥'}</div>
       <div class="result ${r.side}">
         <div class="who">${esc(r.person)}</div>
-        <div class="what">${p.emoji} ${p.name}</div>
-        ${topic}
-        <div class="sub" style="margin-top:10px;color:var(--muted)">${msg}</div>
+        <div class="row2">${paperHTML(r, true)}</div>
+        <div class="msg">${p.msg}</div>
       </div>`;
   }
 
@@ -540,7 +536,7 @@
 
     const chosen = pick(pool);
     const stage = $('stage');
-    stage.innerHTML = `<div class="stage-title">두구두구두구…</div>${paperHTML(r)}<div class="slot" id="slot"></div>`;
+    stage.innerHTML = `<div class="stage-title">두구두구두구…</div>${paperHTML(r, true)}<div class="slot" id="slot"></div>`;
     const slot = $('slot');
 
     // 이름이 빠르게 돌다가 점점 느려지며 멈춤
