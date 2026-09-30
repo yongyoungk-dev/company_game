@@ -194,6 +194,24 @@
   .toast.show { opacity: 1; }
   .confetti { position: absolute; top: -10px; width: 8px; height: 14px; border-radius: 2px; animation: fall linear forwards; z-index: 5; }
   @keyframes fall { to { transform: translateY(460px) rotate(720deg); opacity: 0; } }
+
+  /* ---------- 태블릿: 폰 화면 구성을 그대로 확대 (배율 --z 는 스크립트에서 화면 크기에 맞춰 계산, 최대 2배) ---------- */
+  .tablet .app, .tablet .sheet, .tablet .toast { zoom: var(--z, 1); }
+  .tablet .sheet { max-height: calc(92vh / var(--z, 1)); }
+  /* 가로 모드: 왼쪽에 로고·현황·기록, 오른쪽에 게임 화면 */
+  .wide .app {
+    max-width: none; width: fit-content; display: grid; column-gap: 20px;
+    grid-template-columns: 300px 480px;
+    grid-template-rows: auto auto auto 1fr auto;
+    grid-template-areas: "head stage" "status stage" "steps stage" "hist stage" "hist btn";
+  }
+  .wide header { grid-area: head; }
+  .wide .status { grid-area: status; }
+  .wide .steps { grid-area: steps; }
+  .wide .stage { grid-area: stage; }
+  .wide #mainBtn { grid-area: btn; }
+  .wide .history { grid-area: hist; }
+  .wide header { flex-direction: column; align-items: flex-start; gap: 8px; }
 </style>
 </head>
 <body>
@@ -719,6 +737,25 @@
     closeSettings();
     toast('게임이 초기화되었어요');
   };
+
+  // 태블릿(짧은 변 600px 이상)이면 화면에 맞춰 확대. 폰은 그대로(1배).
+  function fitScreen() {
+    const w = window.innerWidth, h = window.innerHeight;
+    const tablet = Math.min(w, h) >= 600;
+    const wide = tablet && w > h;
+    const root = document.documentElement;
+    root.classList.toggle('tablet', tablet);
+    root.classList.toggle('wide', wide);
+    let z = 1;
+    if (tablet) {
+      // 1배 기준으로 게임 영역(로고~버튼)이 차지하는 크기: 세로 모드 512×770, 가로 모드 832×580
+      z = wide ? Math.min(w / 832, h / 580) : Math.min(w / 512, h / 770);
+      z = Math.max(1, Math.min(2, z));
+    }
+    root.style.setProperty('--z', z.toFixed(3));
+  }
+  fitScreen();
+  window.addEventListener('resize', fitScreen);
 
   renderStage();
   if (!state.settings.people.length) setTimeout(openSettings, 300);
